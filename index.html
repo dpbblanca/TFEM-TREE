@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histori-IA: Recurso TFM</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#e3f2fd',
+                edgeLabelBackground:'#ffffff',
+                tertiaryColor: '#f1f8e9'
+            }
+        });
+    </script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; color: #333; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 900px; }
+        .mermaid { display: flex; justify-content: center; margin-top: 20px; }
+        .info-panel { margin-top: 20px; font-size: 0.9em; color: #666; font-style: italic; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <h1>Histori-IA: Prototipo TFM</h1>
+    <p>Visualización relacional para 2º de Bachillerato</p>
+
+    <div class="container">
+        <pre class="mermaid">
+            graph TD
+                %% Personaje Central
+                PC((CARLOS IV))
+
+                subgraph Familia [Árbol de Sangre]
+                    C3[Carlos III - Padre] --> PC
+                    AM[Amalia de Sajonia - Madre] --> PC
+                    PC --- MLP[María Luisa de Parma - Esposa]
+                    PC --> F7[Fernando VII - Hijo]
+                end
+
+                subgraph Sociedad [Red de Poder]
+                    G[Manuel Godoy - Valido] -.->|Influencia Total| PC
+                    N[Napoleón] -.->|Presión Exterior| PC
+                    PC -.->|Oposición| F7
+                end
+
+                subgraph Economia [Estructura del Siglo]
+                    PC --- AR[Crisis del Antiguo Régimen]
+                    PC --- DH[Déficit de la Hacienda]
+                    PC --- D1[Desamortización de Godoy]
+                end
+
+                %% Estilos visuales
+                style PC fill:#ffd54f,stroke:#333,stroke-width:3px
+                style Familia fill:#fff3f3,stroke:#ffcdd2
+                style Sociedad fill:#e3f2fd,stroke:#bbdefb
+                style Economia fill:#f1f8e9,stroke:#dcedc8
+        </pre>
+    </div>
+
+    <div class="info-panel">
+        * En la versión final, el alumno escribirá un nombre y la IA generará este diagrama en tiempo real.
+    </div>
+
+</body>
+</html>
