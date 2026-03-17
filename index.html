@@ -6,7 +6,11 @@
     <title>Histori-IA | TFM</title>
     <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-        mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+        mermaid.initialize({ 
+            startOnLoad: true, 
+            theme: 'neutral',
+            securityLevel: 'loose'
+        });
         window.mermaid = mermaid;
     </script>
     <style>
@@ -18,9 +22,9 @@
         input:focus { border-color: var(--primary); }
         button { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
         button:hover { opacity: 0.9; }
-        .canvas { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); width: 100%; max-width: 900px; min-height: 400px; display: flex; flex-direction: column; align-items: center; }
+        .canvas { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); width: 100%; max-width: 900px; min-height: 400px; display: flex; flex-direction: column; align-items: center; overflow: auto; }
         #loading { display: none; margin: 20px; color: var(--primary); font-weight: bold; }
-        .mermaid { width: 100%; }
+        .mermaid { width: 100%; text-align: center; }
     </style>
 </head>
 <body>
@@ -31,17 +35,16 @@
     </div>
 
     <div class="search-container">
-        <input type="text" id="userInput" placeholder="Ej: Isabel II, Goya, Cánovas...">
+        <input type="text" id="userInput" placeholder="Prueba: GOYA, ISABEL II o CARLOS IV">
         <button onclick="generateDiagram()">Generar</button>
     </div>
 
-    <div id="loading">Consultando con la IA Histórica...</div>
+    <div id="loading">Buscando en la base de datos histórica...</div>
 
     <div class="canvas" id="canvas">
         <div id="graphOutput" class="mermaid">
-            %% Diagrama inicial de ejemplo
             graph TD
-                A[Escribe un personaje] --> B[La IA analizará:]
+                A[Escribe un personaje] --> B[La App buscará:]
                 B --> C(Familia)
                 B --> D(Sociedad)
                 B --> E(Economía)
@@ -49,22 +52,40 @@
     </div>
 
     <script>
-        function generateDiagram() {
-            const input = document.getElementById('userInput').value;
+        async function generateDiagram() {
+            const input = document.getElementById('userInput').value.toUpperCase().trim();
+            const loading = document.getElementById('loading');
+            const graphOutput = document.getElementById('graphOutput');
+
             if(!input) return;
 
-            // Simulamos carga
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('graphOutput').style.opacity = '0.3';
+            loading.style.display = 'block';
+            
+            try {
+                // Buscamos el archivo datos.json en tu repositorio
+                const response = await fetch('datos.json');
+                const datos = await response.json();
 
-            // En el futuro, aquí llamaremos a la API de OpenAI
-            // Por ahora, simulamos que responde a los 1.5 segundos
-            setTimeout(() => {
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('graphOutput').style.opacity = '1';
-                
-                alert("¡Genial! En la siguiente fase conectaremos con la IA para generar el árbol de " + input);
-            }, 1500);
+                if (datos[input]) {
+                    loading.style.display = 'none';
+                    
+                    // Limpiamos el contenedor y preparamos el nuevo código
+                    graphOutput.removeAttribute('data-processed');
+                    graphOutput.innerHTML = datos[input];
+                    
+                    // Renderizamos de nuevo el diagrama
+                    await mermaid.run({
+                        nodes: [graphOutput],
+                    });
+                } else {
+                    loading.style.display = 'none';
+                    alert("Personaje no encontrado. Prueba con: CARLOS IV, ISABEL II o GOYA (asegúrate de que el nombre esté en el archivo datos.json)");
+                }
+            } catch (error) {
+                console.error("Error leyendo la base de datos", error);
+                loading.style.display = 'none';
+                alert("Error al cargar los datos. Asegúrate de haber creado el archivo datos.json");
+            }
         }
     </script>
 </body>
