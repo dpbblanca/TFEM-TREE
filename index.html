@@ -10,45 +10,57 @@
         mermaid.initialize({ 
             startOnLoad: true, 
             theme: 'base',
-            securityLevel: 'loose', // Necesario para que funcionen los clics
+            securityLevel: 'loose',
             themeVariables: {
                 primaryColor: '#ffffff',
                 primaryTextColor: '#2c3e50',
                 lineColor: '#34495e',
-                fontFamily: "'Inter', sans-serif"
+                fontFamily: "'Inter', sans-serif",
+                tertiaryColor: '#f9fafb'
             }
         });
         window.mermaid = mermaid;
     </script>
     <style>
         :root { --primary: #1a56db; --bg-web: #f7f3e8; --bg-card: #ffffff; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-web); margin: 0; display: flex; flex-direction: column; align-items: center; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-web); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        
         .header { text-align: center; padding: 40px; background-color: var(--primary); color: white; width: 100%; border-bottom: 5px solid #0e37a0; }
         .header h1 { font-family: 'Playfair Display', serif; font-size: 2.5em; margin: 0; }
-        .search-container { background: var(--bg-card); padding: 20px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 80%; max-width: 600px; display: flex; gap: 10px; position: relative; top: -25px; }
-        input { flex-grow: 1; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; }
-        button { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; }
-        .canvas { background: var(--bg-card); padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 90%; max-width: 1000px; min-height: 500px; margin-bottom: 50px; overflow: auto; }
-        /* Estilo para que los nodos parezcan clicables */
-        .node { cursor: pointer !important; transition: transform 0.2s; }
-        .node:hover { transform: scale(1.05); }
+        
+        .search-container { background: var(--bg-card); padding: 20px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 80%; max-width: 600px; display: flex; gap: 10px; position: relative; top: -25px; z-index: 10; }
+        input { flex-grow: 1; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 16px; }
+        button { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+        
+        .canvas { background: var(--bg-card); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 90%; max-width: 1100px; min-height: 600px; margin-bottom: 50px; overflow: visible; display: flex; justify-content: center; }
+        
+        /* Estabilidad para Mermaid */
+        .mermaid { width: 100%; height: auto; display: flex; justify-content: center; }
+        svg { max-width: 100% !important; height: auto !important; }
+
+        #loading { display: none; margin-bottom: 10px; color: var(--primary); font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>Histori-IA</h1>
-        <p>Mapas Conceptuales Dinámicos e Interactivos</p>
+        <p>Navegación Histórica por Categorías</p>
     </div>
+    
     <div class="search-container">
-        <input type="text" id="userInput" placeholder="Escribe: CANOVAS, SAGASTA...">
-        <button onclick="generateDiagram()">GENERAR ÁRBOL</button>
+        <input type="text" id="userInput" placeholder="Ej: CANOVAS, FERNANDO VII, ISABEL II...">
+        <button onclick="generateDiagram()">Generar Árbol</button>
     </div>
+
+    <div id="loading">Cargando mapa interactivo...</div>
+
     <div class="canvas" id="canvas">
         <div id="graphOutput" class="mermaid">
-            graph LR
-                A((Histori-IA)) --> B(Personajes)
-                A --> C(Contexto)
-                A --> D(Economía)
+            graph TD
+                A((Inicio)) --> B{FAMILIA}
+                A --> C{SOCIEDAD}
+                A --> D{ECONOMÍA}
+                style A fill:#1a56db,color:#fff
         </div>
     </div>
 
@@ -56,19 +68,27 @@
         async function generateDiagram() {
             let input = document.getElementById('userInput').value.toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             const graphOutput = document.getElementById('graphOutput');
+            const loading = document.getElementById('loading');
+            
             if(!input) return;
+            loading.style.display = 'block';
             
             try {
                 const response = await fetch('datos.json?v=' + new Date().getTime());
                 const datos = await response.json();
+                
                 if (datos[input]) {
                     graphOutput.removeAttribute('data-processed');
                     graphOutput.innerHTML = datos[input];
                     await mermaid.run({ nodes: [graphOutput] });
                 } else {
-                    alert("No encontrado");
+                    alert("Personaje no encontrado. Prueba con CANOVAS, FERNANDO VII o ISABEL II");
                 }
-            } catch (e) { console.error(e); }
+            } catch (e) {
+                console.error(e);
+            } finally {
+                loading.style.display = 'none';
+            }
         }
     </script>
 </body>
