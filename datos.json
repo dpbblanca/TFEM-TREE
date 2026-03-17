@@ -1,0 +1,7 @@
+{
+  "CARLOS IV": "graph TD\n  PC((CARLOS IV)) \n  subgraph Familia\n    C3[Carlos III] --> PC\n    PC --- MLP[María Luisa de Parma]\n    PC --> F7[Fernando VII]\n  end\n  subgraph Sociedad\n    G[Godoy - Valido] -.-> PC\n    N[Napoleón] -.-> PC\n  end\n  subgraph Economia\n    PC --- DH[Déficit Hacienda]\n    PC --- D1[Desamortización Godoy]\n  end\n  style PC fill:#ffd54f",
+  
+  "ISABEL II": "graph TD\n  I2((ISABEL II)) \n  subgraph Familia\n    F7[Fernando VII] --> I2\n    I2 --- FC[Francisco de Asís]\n    I2 --> A12[Alfonso XII]\n  end\n  subgraph Sociedad\n    M[Moderados] --- I2\n    P[Progresistas] --- I2\n    C[Carlistas] -.->|Guerra| I2\n  end\n  subgraph Economia\n    I2 --- FF[Ley de Ferrocarriles]\n    I2 --- DE[Desamortización Madoz]\n  end\n  style I2 fill:#f06292",
+  
+  "GOYA": "graph TD\n  G((GOYA)) \n  subgraph Familia\n    JG[José Goya] --> G\n    G --- JB[Josefa Bayeu]\n  end\n  subgraph Sociedad\n    G -.->|Pintor de Cámara| C4[Carlos IV]\n    G -.->|Ilustrado| JOV[Jovellanos]\n  end\n  subgraph Economia\n    G --- GI[Guerra Independencia]\n    G --- CR[Crisis Antiguo Régimen]\n  end\n  style G fill:#81c784"
+}
