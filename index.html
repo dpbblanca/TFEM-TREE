@@ -24,32 +24,67 @@
     <style>
         :root { --primary: #1a56db; --bg-web: #f7f3e8; --bg-card: #ffffff; }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-web); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        .header { text-align: center; padding: 40px; background-color: var(--primary); color: white; width: 100%; border-bottom: 5px solid #0e37a0; }
-        .header h1 { font-family: 'Playfair Display', serif; font-size: 2.5em; margin: 0; }
-        .search-container { background: var(--bg-card); padding: 20px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 80%; max-width: 600px; display: flex; gap: 10px; position: relative; top: -25px; z-index: 10; }
-        input { flex-grow: 1; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 16px; }
-        button { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; }
-        .canvas { background: var(--bg-card); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 95%; max-width: 1100px; min-height: 600px; margin-bottom: 50px; display: flex; justify-content: center; overflow: hidden; }
-        .mermaid { width: 100%; }
-        #loading { display: none; color: var(--primary); font-weight: bold; margin-bottom: 5px; }
+        .header { text-align: center; padding<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histori-IA | TFM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ 
+            startOnLoad: true, 
+            theme: 'base',
+            securityLevel: 'loose',
+            flowchart: { htmlLabels: true, curve: 'stepBefore' },
+            themeVariables: {
+                primaryColor: '#f4f1ea',
+                primaryTextColor: '#2c3e50',
+                lineColor: '#8d6e63',
+                fontFamily: "'Montserrat', sans-serif"
+            }
+        });
+        window.mermaid = mermaid;
+    </script>
+    <style>
+        :root { --accent: #b08d57; --dark: #2d2d2d; --bg: #f9f7f2; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg); margin: 0; color: var(--dark); }
+        
+        /* Cabecera Elegante */
+        .header { text-align: center; padding: 60px 20px; background: var(--dark); color: var(--accent); border-bottom: 3px solid var(--accent); }
+        .header h1 { font-family: 'Crimson Pro', serif; font-size: 3.5em; margin: 0; letter-spacing: 2px; text-transform: uppercase; }
+        .header p { font-style: italic; opacity: 0.8; font-size: 1.2em; }
+        
+        /* Buscador Moderno */
+        .search-box { background: white; padding: 10px; border-radius: 50px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 90%; max-width: 500px; display: flex; margin: -35px auto 40px; border: 1px solid #ddd; }
+        input { flex: 1; border: none; padding: 15px 25px; border-radius: 50px; font-size: 16px; outline: none; }
+        button { background: var(--accent); color: white; border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; font-weight: 600; transition: 0.3s; text-transform: uppercase; }
+        button:hover { background: #8e7046; transform: translateY(-2px); }
+        
+        /* Contenedor del Mapa */
+        .canvas { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); width: 90%; max-width: 1200px; margin: 0 auto 50px; min-height: 600px; border: 1px solid #e0e0e0; position: relative; }
+        .mermaid { width: 100%; display: flex; justify-content: center; }
+        #loading { display: none; text-align: center; font-weight: bold; margin-bottom: 10px; color: var(--accent); }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>Histori-IA</h1>
-        <p>Explora la Historia de España por Categorías</p>
+        <p>Red de Conocimiento Histórico Interactivo</p>
     </div>
-    <div class="search-container">
-        <input type="text" id="userInput" placeholder="Ej: CANOVAS, SAGASTA, ISABEL II...">
-        <button onclick="generateDiagram()">Generar Árbol</button>
+    
+    <div class="search-box">
+        <input type="text" id="userInput" placeholder="Ej: CANOVAS, ISABEL II, GOYA...">
+        <button onclick="generateDiagram()">Explorar</button>
     </div>
-    <div id="loading">Construyendo mapa conceptual...</div>
+
+    <div id="loading">Consultando archivos históricos...</div>
+
     <div class="canvas">
         <div id="graphOutput" class="mermaid">
             graph TD
-                A((Escribe un personaje)) --> B{FAMILIA}
-                A --> C{SOCIEDAD}
-                A --> D{ECONOMÍA}
+                Inicio(Escribe un nombre para comenzar) --> Cat(Categorías)
         </div>
     </div>
 
@@ -58,11 +93,14 @@
             let input = document.getElementById('userInput').value.toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             const graphOutput = document.getElementById('graphOutput');
             const loading = document.getElementById('loading');
+            
             if(!input) return;
             loading.style.display = 'block';
+            
             try {
                 const response = await fetch('datos.json?v=' + new Date().getTime());
                 const datos = await response.json();
+                
                 if (datos[input]) {
                     graphOutput.removeAttribute('data-processed');
                     graphOutput.innerHTML = datos[input];
@@ -70,8 +108,12 @@
                 } else {
                     alert("Personaje no encontrado.");
                 }
-            } catch (e) { console.error(e); }
-            finally { loading.style.display = 'none'; }
+            } catch (e) {
+                console.error("Error en Mermaid:", e);
+                graphOutput.innerHTML = "Error al renderizar el mapa. Revisa el formato del JSON.";
+            } finally {
+                loading.style.display = 'none';
+            }
         }
     </script>
 </body>
