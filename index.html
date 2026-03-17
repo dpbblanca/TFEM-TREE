@@ -4,56 +4,195 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Histori-IA | TFM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
         mermaid.initialize({ 
             startOnLoad: true, 
-            theme: 'neutral',
-            securityLevel: 'loose'
+            theme: 'base',
+            securityLevel: 'loose',
+            // --- NUEVOS ESTILOS PARA MERMAID ---
+            themeVariables: {
+                primaryColor: '#faf8f2',    // Fondo nodos secundarios (beige muy claro)
+                primaryTextColor: '#2c3e50', // Texto nodos
+                lineColor: '#7f8c8d',      // Color líneas de conexión
+                fontFamily: "'Inter', sans-serif"
+            }
         });
         window.mermaid = mermaid;
     </script>
     <style>
-        :root { --primary: #2563eb; --bg: #f8fafc; }
-        body { font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .search-container { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); width: 100%; max-width: 600px; display: flex; gap: 10px; margin-bottom: 20px; }
-        input { flex-grow: 1; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; outline: none; transition: border 0.2s; }
-        input:focus { border-color: var(--primary); }
-        button { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
-        button:hover { opacity: 0.9; }
-        .canvas { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); width: 100%; max-width: 900px; min-height: 400px; display: flex; flex-direction: column; align-items: center; overflow: auto; }
-        #loading { display: none; margin: 20px; color: var(--primary); font-weight: bold; }
-        .mermaid { width: 100%; text-align: center; }
+        /* --- ESTILOS GENERALES DE LA WEB --- */
+        :root { 
+            --primary: #1a56db; /* Azul corporativo moderno */
+            --bg-web: #f7f3e8;  /* Beige claro "papel antiguo" */
+            --bg-card: #ffffff; /* Blanco para las tarjetas */
+            --text-main: #374151; /* Gris oscuro para texto */
+            --text-light: #6b7280; /* Gris claro */
+        }
+
+        body { 
+            font-family: 'Inter', system-ui, sans-serif; 
+            background-color: var(--bg-web); 
+            color: var(--text-main);
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh;
+        }
+
+        /* --- CABECERA ESTILO MUSEO --- */
+        .header { 
+            text-align: center; 
+            padding: 50px 20px;
+            background-image: url('https://www.transparenttextures.com/patterns/old-map.png'); /* Mapa antiguo sutil */
+            background-color: var(--primary);
+            color: white;
+            width: 100%;
+            border-bottom: 5px solid #0e37a0; /* Sombra inferior */
+            margin-bottom: 30px;
+        }
+
+        .header h1 { 
+            font-family: 'Playfair Display', serif; /* Tipografía histórica */
+            font-size: 3em;
+            margin: 0 0 10px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p { 
+            font-size: 1.2em;
+            font-weight: 400;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        /* --- CONTENEDOR CENTRAL DE BÚSQUEDA --- */
+        .search-container { 
+            background: var(--bg-card); 
+            padding: 25px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08); 
+            width: 90%; 
+            max-width: 650px; 
+            display: flex; 
+            gap: 15px; 
+            margin-bottom: 30px;
+            border: 1px solid #e5e7eb;
+            position: relative;
+            top: -20px; /* Eleva el buscador sobre la cabecera */
+        }
+
+        input { 
+            flex-grow: 1; 
+            padding: 16px; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 12px; 
+            font-size: 16px; 
+            outline: none; 
+            transition: border-color 0.2s, box-shadow 0.2s; 
+            font-family: 'Inter', sans-serif;
+        }
+
+        input:focus { 
+            border-color: var(--primary); 
+            box-shadow: 0 0 0 4px rgba(26, 86, 219, 0.1); 
+        }
+
+        button { 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            padding: 16px 30px; 
+            border-radius: 12px; 
+            font-weight: 600; 
+            font-size: 16px;
+            cursor: pointer; 
+            transition: background 0.2s, transform 0.1s; 
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover { 
+            background: #0e37a0; 
+        }
+        
+        button:active { 
+            transform: scale(0.98); 
+        }
+
+        /* --- CONTENEDOR DEL DIAGRAMA (LA TARJETA PREMIM) --- */
+        .canvas { 
+            background: var(--bg-card); 
+            padding: 30px; 
+            border-radius: 24px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
+            width: 90%; 
+            max-width: 950px; 
+            min-height: 450px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            overflow: auto; 
+            border: 1px solid #e5e7eb;
+            margin-bottom: 50px;
+        }
+
+        #loading { 
+            display: none; 
+            margin: 30px; 
+            color: var(--primary); 
+            font-weight: 600; 
+            font-size: 1.1em;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* --- AJUSTES ESPECÍFICOS DE MERMAID --- */
+        .mermaid { 
+            width: 100%; 
+            text-align: center; 
+        }
+
+        /* Animación de pulso para el cargando */
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
     </style>
 </head>
 <body>
 
     <div class="header">
         <h1>Histori-IA</h1>
-        <p>Recurso Educativo Interactivo - 2º Bachillerato</p>
+        <p>Tu Red de Conocimiento Histórico Interactivo</p>
     </div>
 
     <div class="search-container">
-        <input type="text" id="userInput" placeholder="Prueba: CÁNOVAS, SAGASTA, ISABEL II...">
-        <button onclick="generateDiagram()">Generar</button>
+        <input type="text" id="userInput" placeholder="Prueba: CÁNOVAS, SAGASTA, GOYA, ISABEL II...">
+        <button onclick="generateDiagram()">Generar Mapa</button>
     </div>
 
-    <div id="loading">Buscando en la base de datos histórica...</div>
+    <div id="loading">Consultando el Archivo de Historia de España...</div>
 
     <div class="canvas" id="canvas">
         <div id="graphOutput" class="mermaid">
+            %% Diagrama de ejemplo con el nuevo estilo base
             graph TD
-                A[Escribe un personaje] --> B[La App buscará:]
-                B --> C(Familia)
-                B --> D(Sociedad)
-                B --> E(Economía)
+                A(Escribe el nombre del personaje) --> B(El sistema dibujará su red de:)
+                B -->|Herederos y lazos| C(FAMILIA)
+                B -->|Relaciones y partidos| D(SOCIEDAD)
+                B -->|Impacto y crisis| E(ECONOMÍA)
         </div>
     </div>
 
     <script>
         async function generateDiagram() {
-            // 1. Capturamos el texto, lo pasamos a mayúsculas, quitamos espacios y eliminamos tildes
+            // 1. Capturamos y limpiamos el texto
             let input = document.getElementById('userInput').value
                 .toUpperCase()
                 .trim()
@@ -68,7 +207,7 @@
             loading.style.display = 'block';
             
             try {
-                // 2. Buscamos el archivo datos.json (añadimos un timestamp para evitar la caché del navegador)
+                // 2. Buscamos el archivo datos.json (anti-caché)
                 const response = await fetch('datos.json?v=' + new Date().getTime());
                 const datos = await response.json();
 
@@ -85,12 +224,12 @@
                     });
                 } else {
                     loading.style.display = 'none';
-                    alert("Personaje no encontrado. Prueba con: CARLOS IV, ISABEL II, GOYA, FERNANDO VII, CANOVAS o SAGASTA.");
+                    alert("Personaje no disponible en la demo. Prueba con: CARLOS IV, ISABEL II, GOYA, FERNANDO VII, CANOVAS o SAGASTA.");
                 }
             } catch (error) {
                 console.error("Error leyendo la base de datos", error);
                 loading.style.display = 'none';
-                alert("Error al cargar los datos. Revisa que datos.json exista y no tenga errores de formato.");
+                alert("Error técnico: Asegúrate de tener el archivo datos.json guardado en la misma carpeta.");
             }
         }
     </script>
