@@ -3,5 +3,11 @@
   
   "ISABEL II": "graph TD\n  I2((ISABEL II)) \n  subgraph Familia\n    F7[Fernando VII] --> I2\n    I2 --- FC[Francisco de Asís]\n    I2 --> A12[Alfonso XII]\n  end\n  subgraph Sociedad\n    M[Moderados] --- I2\n    P[Progresistas] --- I2\n    C[Carlistas] -.->|Guerra| I2\n  end\n  subgraph Economia\n    I2 --- FF[Ley de Ferrocarriles]\n    I2 --- DE[Desamortización Madoz]\n  end\n  style I2 fill:#f06292",
   
-  "GOYA": "graph TD\n  G((GOYA)) \n  subgraph Familia\n    JG[José Goya] --> G\n    G --- JB[Josefa Bayeu]\n  end\n  subgraph Sociedad\n    G -.->|Pintor de Cámara| C4[Carlos IV]\n    G -.->|Ilustrado| JOV[Jovellanos]\n  end\n  subgraph Economia\n    G --- GI[Guerra Independencia]\n    G --- CR[Crisis Antiguo Régimen]\n  end\n  style G fill:#81c784"
+  "GOYA": "graph TD\n  G((GOYA)) \n  subgraph Familia\n    JG[José Goya] --> G\n    G --- JB[Josefa Bayeu]\n  end\n  subgraph Sociedad\n    G -.->|Pintor de Cámara| C4[Carlos IV]\n    G -.->|Ilustrado| JOV[Jovellanos]\n  end\n  subgraph Economia\n    G --- GI[Guerra Independencia]\n    G --- CR[Crisis Antiguo Régimen]\n  end\n  style G fill:#81c784",
+
+  "FERNANDO VII": "graph TD\n  F7((FERNANDO VII)) \n  subgraph Familia\n    C4[Carlos IV] --> F7\n    F7 --- MC[María Cristina]\n    F7 --> I2[Isabel II]\n  end\n  subgraph Sociedad\n    A[Absolutistas] --- F7\n    L[Liberales] -.->|Persecución| F7\n    F7 -.->|Conflicto| C[Carlos M. Isidro]\n  end\n  subgraph Economia\n    F7 --- PI[Pérdida de las Indias]\n    F7 --- QB[Quiebra de la Hacienda]\n  end\n  style F7 fill:#ff8a65",
+
+  "CANOVAS": "graph TD\n  C((CÁNOVAS)) \n  subgraph Familia\n    C --- PC[Partido Alfonsino]\n  end\n  subgraph Sociedad\n    C --- A12[Alfonso XII]\n    C <-->|El Turno| S[Sagasta]\n    C -.->|Oposición| R[Republicanos]\n  end\n  subgraph Economia\n    C --- PR[Proteccionismo]\n    C --- ES[Estabilidad Restauración]\n  end\n  style C fill:#9575cd",
+
+  "SAGASTA": "graph TD\n  S((SAGASTA)) \n  subgraph Familia\n    S --- PL[Partido Liberal]\n  end\n  subgraph Sociedad\n    S --- MCH[Mª Cristina Regente]\n    S <-->|El Turno| C[Cánovas]\n    S -.->|Apoyo| L[Libertad de Cátedra]\n  end\n  subgraph Economia\n    S --- LF[Ley de Ferrocarriles]\n    S --- C98[Crisis del 98]\n  end\n  style S fill:#4db6ac"
 }
