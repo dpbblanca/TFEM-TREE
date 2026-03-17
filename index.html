@@ -35,7 +35,7 @@
     </div>
 
     <div class="search-container">
-        <input type="text" id="userInput" placeholder="Prueba: GOYA, ISABEL II o CARLOS IV">
+        <input type="text" id="userInput" placeholder="Prueba: CÁNOVAS, SAGASTA, ISABEL II...">
         <button onclick="generateDiagram()">Generar</button>
     </div>
 
@@ -53,7 +53,13 @@
 
     <script>
         async function generateDiagram() {
-            const input = document.getElementById('userInput').value.toUpperCase().trim();
+            // 1. Capturamos el texto, lo pasamos a mayúsculas, quitamos espacios y eliminamos tildes
+            let input = document.getElementById('userInput').value
+                .toUpperCase()
+                .trim()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "");
+
             const loading = document.getElementById('loading');
             const graphOutput = document.getElementById('graphOutput');
 
@@ -62,29 +68,29 @@
             loading.style.display = 'block';
             
             try {
-                // Buscamos el archivo datos.json en tu repositorio
-                const response = await fetch('datos.json');
+                // 2. Buscamos el archivo datos.json (añadimos un timestamp para evitar la caché del navegador)
+                const response = await fetch('datos.json?v=' + new Date().getTime());
                 const datos = await response.json();
 
                 if (datos[input]) {
                     loading.style.display = 'none';
                     
-                    // Limpiamos el contenedor y preparamos el nuevo código
+                    // 3. Limpiamos y preparamos el nuevo código
                     graphOutput.removeAttribute('data-processed');
                     graphOutput.innerHTML = datos[input];
                     
-                    // Renderizamos de nuevo el diagrama
+                    // 4. Renderizamos el diagrama con Mermaid
                     await mermaid.run({
                         nodes: [graphOutput],
                     });
                 } else {
                     loading.style.display = 'none';
-                    alert("Personaje no encontrado. Prueba con: CARLOS IV, ISABEL II o GOYA (asegúrate de que el nombre esté en el archivo datos.json)");
+                    alert("Personaje no encontrado. Prueba con: CARLOS IV, ISABEL II, GOYA, FERNANDO VII, CANOVAS o SAGASTA.");
                 }
             } catch (error) {
                 console.error("Error leyendo la base de datos", error);
                 loading.style.display = 'none';
-                alert("Error al cargar los datos. Asegúrate de haber creado el archivo datos.json");
+                alert("Error al cargar los datos. Revisa que datos.json exista y no tenga errores de formato.");
             }
         }
     </script>
